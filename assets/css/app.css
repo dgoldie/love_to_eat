@@ -3,3 +3,13 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+  #wrapper {
+    height: 600px;
+  }
+
+  #map {
+    height: 600px;
+    margin: 0 auto;
+    width: 800px;
+  }

@@ -1,0 +1,49 @@
+<section class="phx-hero">
+ <h1 class="text-4xl font-bold tracking-tight text-indigo-600 sm:text-6xl">
+  LOVE TO EAT
+ </h1>
+
+
+  <button phx-click="add_random_sighting" type="button" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    Add sighting to the map
+  </button>
+</section>
+
+<div>
+<section id="wrapper" class="row h-600px" phx-update="ignore" phx-hook="MapSightingsHandler">
+  <div id="map" class="column h-600px w-800px">
+  </div>
+</section>
+</div>
+
+<script>
+  var map;
+
+ async function initMap() {
+  console.log('initMap')
+  const { Map } = await google.maps.importLibrary("maps");
+  const { Marker } = await google.maps.importLibrary("marker");
+
+  haightAshbury = {lat: 37.77024, lng: -122.4454 }
+  chinatown = { lat:  37.7945, lng: -122.4048 }
+
+  map = new Map(document.getElementById('map'), {
+    center: haightAshbury,
+    zoom: 13,
+    mapId: "DEMO_MAP_ID",
+  });
+
+  const marker = new Marker({
+    map: map,
+    position: chinatown,
+    title: "text for marker in chinatown",
+    label: "C"
+  });
+  console.log('marker position')
+  console.log(marker.position)
+}
+
+</script>
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC_n_KnZ9wj5yJOClWzsfEZGn-MkJyNyo&v=3.53&callback=initMap&libraries=&v=weekly" async defer></script>
