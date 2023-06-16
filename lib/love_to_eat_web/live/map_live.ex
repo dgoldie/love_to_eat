@@ -1,6 +1,9 @@
 defmodule LoveToEatWeb.MapLive do
   use LoveToEatWeb, :live_view
 
+  alias LoveToEat.Repo
+  alias LoveToEat.Catalog.Truck.Query
+
   @impl true
   def mount(_params, _session, socket) do
     IO.puts "mount map live *******************"
@@ -8,26 +11,22 @@ defmodule LoveToEatWeb.MapLive do
   end
 
   @impl true
-  def handle_event("add_random_sighting", _params, socket) do
-    # chinatown = %{latitude: 37.7945, longitude: 122.4048}
-    # presidio = %{latitude: 37.7924, longitude: 122.4810}
-    # # random_sighting =  generate_random_sighting()
-    # haightashbury = %{latitude: 37.77024, longitude: 122.4454 }
+  def handle_event("add_truck_data", params, socket) do
+    IO.puts "add_truck_data"
+    IO.inspect(params)
+    italian =
+      Query.by_food("italian")
+      |> Repo.all()
 
-    # IO.inspect(presidio)
+    IO.puts "new_sighting returns.........."
+    IO.inspect(italian)
+    assign(
+      socket, %{
+        trucks: italian
+      }
+    )
 
-
-    # inform the browser / client that there is a new sighting
-    sighting = %{
-      title: "Presidio",
-      label: "P",
-      lat: 37.7924,
-      lng:  -122.4810
-    }
-
-    IO.inspect(sighting)
-
-    {:noreply, push_event(socket, "new_sighting", %{sighting: sighting})}
+    {:noreply, push_event(socket, "new-markers", %{trucks: italian})}
   end
 
   # defp generate_random_sighting() do

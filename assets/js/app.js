@@ -28,15 +28,18 @@ Hooks.MapSightingsHandler = {
   mounted() {
 
     console.log('mounted in hooks')
-    const handleNewSightingFunction = ({ sighting }) => {
-      // const { LatLng } = await google.maps.importLibrary("core")
 
-      console.log('handleNewSightingFunction')
-      console.log('sighting')
-      console.log(sighting)
+    this.handleEvent("new-markers", (trucks) => {
 
-      const contentString =
-        '<div id="content">' +
+    // function handleNewSightingFunction({ new_sighting }) {
+
+      console.log('handleNewSightingFunction......')
+      console.log('trucks')
+      console.log(trucks[0])
+      const lat = parseFloat(trucks[0].latitude)
+      const lng = parseFloat(trucks[0].longitude)
+
+      const contentString = '<div id="content">' +
         '<div id="siteNotice">' +
         "</div>" +
         '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
@@ -55,25 +58,25 @@ Hooks.MapSightingsHandler = {
         "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
         "(last visited June 22, 2009).</p>" +
         "</div>" +
-        "</div>";
+        "</div>"
 
       console.log('contentString')
       console.log(contentString)
 
       const infowindow = new google.maps.InfoWindow({
         content: contentString,
-        ariaLabel: "Uluru",
-      });
+        ariaLabel: "San Francisco",
+      })
 
-      console.log(contentString);
-      console.log(sighting)
+      console.log(contentString)
+      const position = { lat, lng }
+      console.log(position)
 
       const marker = new google.maps.Marker({
-        position: sighting,
+        position: position,
         animation: google.maps.Animation.DROP,
         map: map,
-        title: sighting.title,
-        label: sighting.label,
+        title: trucks[0].applicant
       })
 
       console.log('marker before listener')
@@ -83,34 +86,25 @@ Hooks.MapSightingsHandler = {
         infowindow.open({
           anchor: marker,
           map,
-        });
-      });
+        })
+      })
 
       console.log(marker)
-      // const marker = new google.maps.Marker({
-      //   position: sighting,
-      //   animation: google.maps.Animation.DROP,
-      //   map: map,
-      //   title: "text for presidio",
-      //   label: "P",
-      // })
-
       console.log('marker position in hook')
       console.log(map)
 
-      var latLng = marker.getPosition(); // returns LatLng object
-      map.setCenter(latLng); // setCenter takes a LatLng object
+      var latLng = marker.getPosition() // returns LatLng object
+      map.setCenter(latLng) // setCenter takes a LatLng object
 
       console.log('center on')
       console.log(latLng)
-      map.setZoom(15);
+      map.setZoom(15)
       // To add the marker to the map, call setMap();
       // marker.setMap(map)
-
-    };
+    })
 
     // handle new sightings as they show up
-    this.handleEvent("new_sighting", handleNewSightingFunction)
+    // this.handleEvent("new_sighting", handleNewSightingFunction)
     console.log('-----------------------------------')
   }
 }
@@ -128,6 +122,17 @@ window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
+
+window.addEventListener(`phx:new_sighting`, (e) => {
+  let el = document.getElementById(e.detail.id)
+  if(el) {
+    // logic for highlighting
+    console.log('el')
+    console.log(el)
+    console.log(e)
+  }
+})
+
 
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()

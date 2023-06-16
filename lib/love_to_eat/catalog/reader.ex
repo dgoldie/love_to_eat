@@ -1,4 +1,4 @@
-defmodule LoveToEat.Reader do
+defmodule LoveToEat.Catalog.Reader do
   @files_path Path.expand("../../priv/data", __DIR__)
   @import_file "Mobile_Food_Facility_Permit"
 

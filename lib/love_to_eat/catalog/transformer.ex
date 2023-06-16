@@ -1,5 +1,6 @@
-defmodule LoveToEat.Transformer do
-  alias LoveToEat.{Reader, Truck, Repo}
+defmodule LoveToEat.Catalog.Transformer do
+  alias LoveToEat.Catalog.{Reader, Truck}
+  alias LoveToEat.Repo
 
   def import(filename) do
     Reader.read(filename)

@@ -1,6 +1,8 @@
-defmodule LoveToEat.Truck do
+defmodule LoveToEat.Catalog.Truck do
   use Ecto.Schema
 
+  @derive {Jason.Encoder, only: [:applicant, :location_description, :dayshours,
+                                 :food_items, :latitude, :longitude, :location]}
   schema "trucks" do
     field(:location_id, :string)
     field(:applicant, :string)
