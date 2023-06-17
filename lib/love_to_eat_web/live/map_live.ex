@@ -7,35 +7,31 @@ defmodule LoveToEatWeb.MapLive do
   @impl true
   def mount(_params, _session, socket) do
     IO.puts "mount map live *******************"
-    {:ok, socket}
+    {:ok,
+      assign(socket,
+        trucks: [],
+        selected_trucks: nil
+    )}
   end
 
   @impl true
-  def handle_event("add_truck_data", params, socket) do
-    IO.puts "add_truck_data"
-    IO.inspect(params)
-    italian =
-      Query.by_food("italian")
+  def handle_event("find-trucks-by-food", params, socket) do
+    food_type = params["food"]
+    IO.inspect(params["food"])
+
+    selected_trucks =
+      Query.by_food(food_type)
       |> Repo.all()
 
-    IO.puts "new_sighting returns.........."
-    IO.inspect(italian)
-    assign(
-      socket, %{
-        trucks: italian
-      }
-    )
+    socket =
+      socket
+      |> assign(:selected_trucks, selected_trucks)
+      |> assign(:food_type, food_type)
+      |> push_event("add-selected-trucks", %{trucks: selected_trucks})
 
-    {:noreply, push_event(socket, "new-markers", %{trucks: italian})}
+    {:noreply, socket}
+    # {:noreply,  %{new_trucks: selected_trucks}, socket}
+    # {:noreply, push_event(socket, "new_trucks", %{new_trucks: selected_trucks} )}
   end
 
-  # defp generate_random_sighting() do
-  #   # https://developers.google.com/maps/documentation/javascript/reference/coordinates
-  #   # Latitude ranges between -90 and 90 degrees, inclusive.
-  #   # Longitude ranges between -180 and 180 degrees, inclusive
-  #   %{
-  #     latitude: Enum.random(-90..90),
-  #     longitude: Enum.random(-180..180)
-  #   }
-  # end
 end

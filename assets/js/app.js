@@ -29,11 +29,13 @@ Hooks.MapSightingsHandler = {
 
     console.log('mounted in hooks')
 
-    this.handleEvent("new-markers", (trucks) => {
+    // this.pushEvent("unavailable-dates", {}, (reply, ref) => {
+    //   this.pickr.set("disable", reply.dates)
+    // })
 
-    // function handleNewSightingFunction({ new_sighting }) {
 
-      console.log('handleNewSightingFunction......')
+    this.handleEvent("add-selected-trucks", ({trucks}) => {
+      console.log('add trucks......')
       console.log('trucks')
       console.log(trucks[0])
       const lat = parseFloat(trucks[0].latitude)
