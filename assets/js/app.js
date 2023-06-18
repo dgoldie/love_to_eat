@@ -21,6 +21,8 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+// import contentString from "./contentString"
+
 
 let Hooks = {}
 
@@ -29,87 +31,119 @@ Hooks.MapSightingsHandler = {
 
     console.log('mounted in hooks')
 
-    // this.pushEvent("unavailable-dates", {}, (reply, ref) => {
-    //   this.pickr.set("disable", reply.dates)
-    // })
-
-
+    let markers = []
     this.handleEvent("add-selected-trucks", ({trucks}) => {
-      console.log('add trucks......')
-      console.log('trucks')
-      console.log(trucks[0])
-      const lat = parseFloat(trucks[0].latitude)
-      const lng = parseFloat(trucks[0].longitude)
+      console.log('hide markers')
+      hideMarkers()
 
-      const contentString = '<div id="content">' +
-        '<div id="siteNotice">' +
-        "</div>" +
-        '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-        '<div id="bodyContent">' +
-        "<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large " +
-        "sandstone rock formation in the southern part of the " +
-        "Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) " +
-        "south west of the nearest large town, Alice Springs; 450&#160;km " +
-        "(280&#160;mi) by road. Kata Tjuta and Uluru are the two major " +
-        "features of the Uluru - Kata Tjuta National Park. Uluru is " +
-        "sacred to the Pitjantjatjara and Yankunytjatjara, the " +
-        "Aboriginal people of the area. It has many springs, waterholes, " +
-        "rock caves and ancient paintings. Uluru is listed as a World " +
-        "Heritage Site.</p>" +
-        '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-        "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
-        "(last visited June 22, 2009).</p>" +
-        "</div>" +
-        "</div>"
+      for (var i = 0, len = trucks.length; i < len; i++) {
+        const truck = trucks[i]
 
-      console.log('contentString')
-      console.log(contentString)
+        const contentString = '<div id="content">' +
+          '<div id="siteNotice">' +
+          "</div>" +
+          '<h1 id="firstHeading" class="firstHeading">' +
+          '<b><dt>Applicant:&nbsp;&nbsp;</b>' + truck.applicant + '</h1>' +
+          '<div id="bodyContent"><br>' +
+          "<p><b>Location Description:&nbsp;&nbsp;</b>" + truck.location_description  + '</p><br>' +
+          "<p><b>Address:&nbsp;&nbsp;</b>" + truck.address  + '</p><br>' +
+          "<p><b>Days / Hours:&nbsp;&nbsp;</b>" + truck.dayshours  + '</p><br>' +
+          "<p><b>Location:&nbsp;&nbsp;</b>" + truck.location  + '</p><br>' +
+          "<p><b>Latitude:&nbsp;&nbsp;</b>" + truck.latitude  + '</p><br>' +
+          "<p><b>Longitude:&nbsp;&nbsp;</b>" + truck.longitude  + '</p><br>' +
+          '</div>' +
+          '</div>'
 
-      const infowindow = new google.maps.InfoWindow({
-        content: contentString,
-        ariaLabel: "San Francisco",
-      })
+        console.log(contentString)
 
-      console.log(contentString)
-      const position = { lat, lng }
-      console.log(position)
+        const lat = parseFloat(truck.latitude)
+        const lng = parseFloat(truck.longitude)
 
-      const marker = new google.maps.Marker({
-        position: position,
-        animation: google.maps.Animation.DROP,
-        map: map,
-        title: trucks[0].applicant
-      })
-
-      console.log('marker before listener')
-      console.log(marker)
-
-      marker.addListener("click", () => {
-        infowindow.open({
-          anchor: marker,
-          map,
+        const infowindow = new google.maps.InfoWindow({
+          content: contentString,
+          ariaLabel: "San Francisco",
         })
-      })
 
-      console.log(marker)
-      console.log('marker position in hook')
-      console.log(map)
+        console.log(contentString)
+        const position = { lat, lng }
+        console.log('position **********************')
+        console.log(position)
+        console.log('label')
+        const label = (i + 1).toString()
+        console.log(label)
 
-      var latLng = marker.getPosition() // returns LatLng object
-      map.setCenter(latLng) // setCenter takes a LatLng object
+        const marker = new google.maps.Marker({
+          position: position,
+          animation: google.maps.Animation.DROP,
+          map: map,
+          title: truck.applicant,
+          label: label
+        })
 
-      console.log('center on')
-      console.log(latLng)
-      map.setZoom(15)
-      // To add the marker to the map, call setMap();
-      // marker.setMap(map)
+        console.log('marker before listener')
+        console.log(marker)
+
+        marker.addListener("click", () => {
+          infowindow.open({
+            anchor: marker,
+            map,
+          })
+        })
+
+        console.log(marker)
+        console.log('marker position in hook')
+        console.log(map)
+
+        var latLng = marker.getPosition() // returns LatLng object
+        map.setCenter(latLng) // setCenter takes a LatLng object
+
+        console.log('center on')
+        console.log(latLng)
+        map.setZoom(15)
+        // To add the marker to the map, call setMap();
+        // marker.setMap(map)
+
+
+        markers << marker
+        // handle new sightings as they show up
+        // this.handleEvent("new_sighting", handleNewSightingFunction)
+        console.log('-----------------------------------')
+
+
+
+
+      }
     })
 
-    // handle new sightings as they show up
-    // this.handleEvent("new_sighting", handleNewSightingFunction)
-    console.log('-----------------------------------')
+    // Removes the markers from the map, but keeps them in the array.
+    function hideMarkers() {
+      console.log('hide ***************************************')
+      setMapOnAll(null);
+    }
+
+    // Shows any markers currently in the array.
+    function showMarkers() {
+      console.log('show *************************************')
+      setMapOnAll(map);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+      console.log('delete **************************************')
+      hideMarkers();
+      markers = [];
+    }
+
+    // Sets the map on all markers in the array.
+    function setMapOnAll(map) {
+      console.log('setMaponall ---------------------------------')
+      for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+      }
+    }
   }
 }
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
@@ -125,20 +159,6 @@ window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 
-window.addEventListener(`phx:new_sighting`, (e) => {
-  let el = document.getElementById(e.detail.id)
-  if(el) {
-    // logic for highlighting
-    console.log('el')
-    console.log(el)
-    console.log(e)
-  }
-})
 
-
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
