@@ -21,8 +21,6 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
-// import contentString from "./contentString"
-
 
 let Hooks = {}
 
@@ -33,7 +31,7 @@ Hooks.MapSightingsHandler = {
 
     let markers = []
     this.handleEvent("add-selected-trucks", ({trucks}) => {
-      console.log('hide markers')
+      console.log('trucks')
       hideMarkers()
 
       for (var i = 0, len = trucks.length; i < len; i++) {
@@ -54,7 +52,7 @@ Hooks.MapSightingsHandler = {
           '</div>' +
           '</div>'
 
-        console.log(contentString)
+        // console.log(contentString)
 
         const lat = parseFloat(truck.latitude)
         const lng = parseFloat(truck.longitude)
@@ -64,13 +62,13 @@ Hooks.MapSightingsHandler = {
           ariaLabel: "San Francisco",
         })
 
-        console.log(contentString)
+
         const position = { lat, lng }
-        console.log('position **********************')
-        console.log(position)
-        console.log('label')
+        // console.log('position **********************')
+        // console.log(position)
+        // console.log('label')
         const label = (i + 1).toString()
-        console.log(label)
+        // console.log(label)
 
         const marker = new google.maps.Marker({
           position: position,
@@ -80,8 +78,8 @@ Hooks.MapSightingsHandler = {
           label: label
         })
 
-        console.log('marker before listener')
-        console.log(marker)
+        // console.log('marker before listener')
+        // console.log(marker)
 
         marker.addListener("click", () => {
           infowindow.open({
@@ -90,15 +88,15 @@ Hooks.MapSightingsHandler = {
           })
         })
 
-        console.log(marker)
-        console.log('marker position in hook')
-        console.log(map)
+        // console.log(marker)
+        // console.log('marker position in hook')
+        // console.log(map)
 
         var latLng = marker.getPosition() // returns LatLng object
         map.setCenter(latLng) // setCenter takes a LatLng object
 
-        console.log('center on')
-        console.log(latLng)
+        // console.log('center on')
+        // console.log(latLng)
         map.setZoom(15)
         // To add the marker to the map, call setMap();
         // marker.setMap(map)
